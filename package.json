@@ -1,0 +1,23 @@
+{
+  "name": "contracts",
+  "version": "1.0.0",
+  "description": "Protobuf and RabbitMQ contracts",
+  "scripts": {
+    "generate": "protoc -I ./proto ./proto/*.proto --ts_proto_out=./gen --ts_proto_opt=nestJs=true,package=omit"
+  },
+  "files": [
+    "proto",
+    "gen"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@bufbuild/buf": "^1.65.0",
+    "@nestjs/microservices": "^11.1.13",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "ts-proto": "^2.11.2"
+  }
+}

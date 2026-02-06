@@ -1,0 +1,49 @@
+// Syntax version
+syntax = "proto3";
+
+// package domain.apiVersion
+package auth.v1;
+
+import "google/protobuf/empty.proto";//emty object
+import "google/protobuf/timestamp.proto";//unify timestamp object
+import "google/protobuf/struct.proto";//JSON
+import "google/protobuf/any.proto";//any message
+import "google/protobuf/duration.proto";//duration time
+
+service AuthService {
+  // rpc Name (Request) returns (Response);
+  rpc Registration(RegistrationRequest) returns (RegistrationResponse);
+
+  //rpc Ping (google.protobuf.Empty) returns ();
+}
+
+message RegistrationRequest {
+  string email = 1;
+  string user_name = 2;
+  string password = 3;
+  //bool isVerified = 4; логическое выражение
+  //int32 age = 5; число
+  //double rating = 6 плавающая точка
+  //repeated string roles = 7; массив
+  //map<string, string> meta = 8; Record 
+  //Status status = 9; Работаю enum
+  //oneof orientation { 
+    //bool isGay  =10;
+    //bool isHeterosexual = 11;
+  //} можно выбрать одно значение либо.либо
+  //google.protobuf.Timestamp created_at = 12;
+  //google.protobuf.Timestamp updated_at = 13;
+ }
+
+// enum Status {
+//   ACTIVE = 0; //Default value
+//   BANNED = 1;
+//   DELETED=2;
+// }
+
+
+message RegistrationResponse {
+  string email = 1;
+  google.protobuf.Duration expires_time = 2;
+  string message = 3;
+}
