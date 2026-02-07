@@ -1,6 +1,6 @@
 {
   "name": "@noildm/contracts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Protobuf and RabbitMQ contracts",
   "scripts": {
     "generate": "npx protoc -I ./proto ./proto/*.proto --ts_proto_out=./gen --ts_proto_opt=nestJs=true,package=omit"
