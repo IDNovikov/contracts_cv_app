@@ -22,9 +22,6 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name : Patch version 
-        run : npm version patch
-        
       - name: Generate TS protobuf
         run: npm run generate
 
