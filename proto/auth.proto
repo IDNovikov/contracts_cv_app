@@ -44,6 +44,6 @@ message RegistrationRequest {
 
 message RegistrationResponse {
   string email = 1;
-  google.protobuf.Duration expires_time = 2;
+  int32 expires_time = 2;
   string message = 3;
 }
