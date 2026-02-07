@@ -1,5 +1,5 @@
 {
-  "name": "contracts",
+  "name": "@noildm/contracts",
   "version": "1.0.0",
   "description": "Protobuf and RabbitMQ contracts",
   "scripts": {
