@@ -1,23 +1,26 @@
 {
   "name": "@noildm/contracts",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Protobuf and RabbitMQ contracts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "generate": "npx protoc -I ./proto ./proto/*.proto --ts_proto_out=./gen --ts_proto_opt=nestJs=true,package=omit"
+    "generate": "npx protoc -I ./proto ./proto/*.proto --ts_proto_out=./gen --ts_proto_opt=nestJs=true,package=omit",
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run generate && npm run build"
   },
   "files": [
     "proto",
-    "gen"
+    "gen",
+    "dist"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "dependencies": {
     "@bufbuild/buf": "^1.65.0",
     "@nestjs/microservices": "^11.1.13",
     "rxjs": "^7.8.2"
   },
   "devDependencies": {
-    "ts-proto": "^2.11.2"
+    "ts-proto": "^2.11.2",
+    "typescript": "^5.0.0"
   }
 }
