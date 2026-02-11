@@ -12,7 +12,8 @@
   "files": [
     "proto",
     "gen",
-    "dist"
+    "dist",
+    "contracts"
   ],
   "dependencies": {
     "@bufbuild/buf": "^1.65.0",
