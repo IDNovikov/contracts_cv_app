@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package test.v1;
+
+import "google/protobuf/empty.proto";//emty object
+service TestService {
+  rpc Test(TestRequest) returns (TestResponse);
+  rpc Ping (Empty) returns (Empty);
+}
+
+message TestRequest {
+  string test_request = 1;
+ }
+
+message TestResponse {
+    string test_response =1;
+}
+
+message Empty {
+    google.protobuf.Empty empty = 1;
+}
