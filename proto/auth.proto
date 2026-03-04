@@ -1,49 +1,154 @@
-// Syntax version
 syntax = "proto3";
 
-// package domain.apiVersion
 package auth.v1;
 
-import "google/protobuf/empty.proto";//emty object
-import "google/protobuf/timestamp.proto";//unify timestamp object
-import "google/protobuf/struct.proto";//JSON
-import "google/protobuf/any.proto";//any message
-import "google/protobuf/duration.proto";//duration time
+import "google/protobuf/empty.proto";
 
 service AuthService {
-  // rpc Name (Request) returns (Response);
-  rpc Registration(RegistrationRequest) returns (RegistrationResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc RefreshTokens(RefreshTokensRequest) returns (TokensResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
 
-  //rpc Ping (google.protobuf.Empty) returns ();
+  rpc Registrate(RegistrateRequest) returns (RegistrationResponse);
+  rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse);
+  rpc GetNewVerificationCode(EmailRequest) returns (RegistrationResponse);
+
+  rpc ChangePassword(ChangePasswordRequest) returns (TextMessageResponse);
+  rpc GetTempPassword(EmailRequest) returns (TextMessageResponse);
+
+  rpc GetUserSessions(GetUserSessionsRequest) returns (UserSessionsResponse);
+  rpc LogoutUserSession(LogoutUserSessionRequest) returns (TextMessageResponse);
+
+  rpc GetAllSessionsByAdmin(google.protobuf.Empty) returns (AdminSessionsResponse);
+  rpc LogoutUserSessionsByAdmin(LogoutUserSessionsByAdminRequest) returns (TextMessageResponse);
+  rpc LogoutAllSessionsByAdmin(google.protobuf.Empty) returns (TextMessageResponse);
 }
 
-message RegistrationRequest {
+message Location {
+  string ip = 1;
+  string city = 2;
+  string country = 3;
+}
+
+message SessionData {
+  string user_agent = 1;
+  string device = 2;
+  Location location = 3;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  string role = 3;
+}
+
+message VerifiedUser {
+  string user_id = 1;
+  string email = 2;
+  string role = 3;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  string token = 3;
+  SessionData session_data = 4;
+}
+
+message LoginResponse {
+  string message = 1;
+  User user = 2;
+  string access_token = 3;
+  string refresh_token = 4;
+}
+
+message RefreshTokensRequest {
+  string token = 1;
+  SessionData session_data = 2;
+}
+
+message TokensResponse {
+  string message = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+}
+
+message LogoutRequest {
+  string token = 1;
+  string jti = 2;
+}
+
+message LogoutResponse {
+  bool clear_refresh_cookie = 1;
+  string message = 2;
+}
+
+message RegistrateRequest {
   string email = 1;
   string user_name = 2;
   string password = 3;
-  //bool isVerified = 4; логическое выражение
-  //int32 age = 5; число
-  //double rating = 6 плавающая точка
-  //repeated string roles = 7; массив
-  //map<string, string> meta = 8; Record 
-  //Status status = 9; Работаю enum
-  //oneof orientation { 
-    //bool isGay  =10;
-    //bool isHeterosexual = 11;
-  //} можно выбрать одно значение либо.либо
-  //google.protobuf.Timestamp created_at = 12;
-  //google.protobuf.Timestamp updated_at = 13;
- }
-
-// enum Status {
-//   ACTIVE = 0; //Default value
-//   BANNED = 1;
-//   DELETED=2;
-// }
-
+}
 
 message RegistrationResponse {
   string email = 1;
-  int32 expires_time = 2;
+  int64 expires_time = 2;
   string message = 3;
+}
+
+message VerifyEmailRequest {
+  string email = 1;
+  string confirm_code = 2;
+  SessionData session_data = 3;
+}
+
+message VerifyEmailResponse {
+  VerifiedUser user = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+}
+
+message EmailRequest {
+  string email = 1;
+}
+
+message ChangePasswordRequest {
+  string user_id = 1;
+  string old_password = 2;
+  string new_password = 3;
+}
+
+message GetUserSessionsRequest {
+  string token = 1;
+}
+
+message LogoutUserSessionRequest {
+  string token = 1;
+  string device_id = 2;
+}
+
+message UserSession {
+  string device_id = 1;
+  SessionData session = 2;
+}
+
+message UserSessionsResponse {
+  repeated UserSession data = 1;
+}
+
+message AdminSession {
+  string user_id = 1;
+  string device_id = 2;
+  SessionData session = 3;
+}
+
+message AdminSessionsResponse {
+  repeated AdminSession data = 1;
+}
+
+message LogoutUserSessionsByAdminRequest {
+  string user_id = 1;
+}
+
+message TextMessageResponse {
+  string message = 1;
 }
