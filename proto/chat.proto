@@ -1,0 +1,185 @@
+syntax = "proto3";
+
+package chat.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service ChatService {
+  rpc CreateChat(CreateChatRequest) returns (Chat);
+  rpc GetChat(GetChatRequest) returns (Chat);
+  rpc UpdateChat(UpdateChatRequest) returns (Chat);
+  rpc DeleteChat(DeleteChatRequest) returns (google.protobuf.Empty);
+
+  rpc GetListChats(ListChatsRequest) returns (ListChatsResponse);
+
+ rpc AddMembers(AddMembersRequest) returns (google.protobuf.Empty);
+ rpc RemoveMember(RemoveMemberRequest) returns (google.protobuf.Empty);
+
+  rpc LeaveChat(LeaveChatRequest) returns (google.protobuf.Empty);
+
+  rpc SendMessage(SendMessageRequest) returns (Message);
+  rpc UpdateMessage(UpdateMessageRequest) returns (Message);
+  rpc DeleteMessage(DeleteMessageRequest) returns (google.protobuf.Empty);
+
+  rpc GetListMessages(ListMessagesRequest) returns (ListMessagesResponse);
+
+  rpc MarkAsRead(MarkAsReadRequest) returns (google.protobuf.Empty);
+}
+
+enum ChatType {
+  CHAT_TYPE_UNSPECIFIED = 0;
+  CHAT_TYPE_DIRECT = 1;
+  CHAT_TYPE_GROUP = 2;
+}
+
+enum ChatMemberRole {
+  CHAT_MEMBER_ROLE_UNSPECIFIED = 0;
+  CHAT_MEMBER_ROLE_OWNER = 1;
+  CHAT_MEMBER_ROLE_ADMIN = 2;
+  CHAT_MEMBER_ROLE_MEMBER = 3;
+}
+
+enum MessageKind {
+  MESSAGE_KIND_UNSPECIFIED = 0;
+  MESSAGE_KIND_TEXT = 1;
+  MESSAGE_KIND_SYSTEM = 2;
+}
+
+
+message Chat {
+  string id = 1;
+  ChatType type = 2;
+  optional string title = 3;
+  optional string avatar_url = 4;
+  optional string direct_key = 5;
+  string created_by_id = 6;
+  optional string last_message_id = 7;
+  optional google.protobuf.Timestamp last_message_at = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+  optional google.protobuf.Timestamp deleted_at = 11;
+}
+
+message ChatMember {
+  string id = 1;
+  string chat_id = 2;
+  string user_id = 3;
+  ChatMemberRole role = 4;
+  google.protobuf.Timestamp joined_at = 5;
+  optional google.protobuf.Timestamp left_at = 6;
+  optional google.protobuf.Timestamp archived_at = 7;
+  optional google.protobuf.Timestamp muted_until = 8;
+  optional string last_read_message_id = 9;
+  optional google.protobuf.Timestamp last_read_at = 10;
+}
+
+message Message {
+  string id = 1;
+  string chat_id = 2;
+  string author_id = 3;
+  MessageKind kind = 4;
+  string text = 5;
+  bool is_edited = 6;
+  optional google.protobuf.Timestamp edited_at = 7;
+  optional google.protobuf.Timestamp deleted_at = 8;
+  optional string reply_to_id = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+   string request_id = 12;
+}
+
+message CreateChatRequest {
+  string request_id = 1; 
+
+  ChatType type = 2;
+
+  repeated string user_ids = 3;
+
+  optional string title = 4;
+  optional string avatar_url = 5;
+}
+
+message GetChatRequest {
+  string chat_id = 1;
+}
+
+message UpdateChatRequest {
+  string chat_id = 1;
+
+  optional string title = 2;
+  optional string avatar_url = 3;
+}
+
+message DeleteChatRequest {
+  string chat_id = 1;
+}
+
+message ListChatsRequest {
+  string user_id = 1;
+
+  int32 limit = 2;
+  optional string cursor = 3;
+}
+
+message ListChatsResponse {
+  repeated Chat chats = 1;
+  optional string next_cursor = 2;
+}
+
+message AddMembersRequest {
+  string chat_id = 1;
+  repeated string user_ids = 2;
+}
+
+message RemoveMemberRequest {
+  string chat_id = 1;
+  string user_id = 2;
+}
+
+message LeaveChatRequest {
+  string chat_id = 1;
+  string user_id = 2;
+}
+
+message SendMessageRequest {
+  string request_id = 1; 
+
+  string chat_id = 2;
+  string author_id = 3;
+
+  MessageKind kind = 4;
+
+  optional string text = 5;
+  optional string reply_to_id = 6;
+}
+
+message UpdateMessageRequest {
+  string message_id = 1;
+  string author_id = 2;
+
+  optional string text = 3;
+}
+
+message DeleteMessageRequest {
+  string message_id = 1;
+  string author_id = 2;
+}
+
+message ListMessagesRequest {
+  string chat_id = 1;
+
+  int32 limit = 2;
+  optional string cursor = 3;
+}
+
+message ListMessagesResponse {
+  repeated Message messages = 1;
+  optional string next_cursor = 2;
+}
+
+message MarkAsReadRequest {
+  string chat_id = 1;
+  string user_id = 2;
+  string last_read_message_id = 3;
+}

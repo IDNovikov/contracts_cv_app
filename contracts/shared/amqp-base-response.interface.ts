@@ -1,8 +1,9 @@
-import { AmqpBaseRequest } from './amqp-base-request.interface';
-
-export interface AmqpBaseResponse<T = unknown> extends AmqpBaseRequest<T> {
+export interface AmqpBaseResponse<T = unknown> {
+  requestId: string;
+  payload?: T;
   error?: {
     code: string;
     message: string;
   };
+  timeStamp: string;
 }
