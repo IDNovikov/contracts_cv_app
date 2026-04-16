@@ -1,2 +1,4 @@
-1. npm version patch
-2. git push
+git add .
+git commit -m "..."
+npm version patch
+git push
