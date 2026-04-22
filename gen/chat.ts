@@ -39,26 +39,41 @@ export interface Chat {
   type: ChatType;
   title?: string | undefined;
   avatarUrl?: string | undefined;
-  directKey?: string | undefined;
   createdById: string;
   lastMessageId?: string | undefined;
   lastMessageAt?: Timestamp | undefined;
   createdAt: Timestamp | undefined;
   updatedAt: Timestamp | undefined;
-  deletedAt?: Timestamp | undefined;
 }
 
-export interface ChatMember {
-  id: string;
-  chatId: string;
+export interface ChatParticipant {
   userId: string;
   role: ChatMemberRole;
   joinedAt: Timestamp | undefined;
-  leftAt?: Timestamp | undefined;
-  archivedAt?: Timestamp | undefined;
+}
+
+export interface ChatUserState {
+  role: ChatMemberRole;
+  joinedAt: Timestamp | undefined;
   mutedUntil?: Timestamp | undefined;
+  archivedAt?: Timestamp | undefined;
   lastReadMessageId?: string | undefined;
   lastReadAt?: Timestamp | undefined;
+}
+
+export interface ChatDetails {
+  chat: Chat | undefined;
+  myState: ChatUserState | undefined;
+  participants: ChatParticipant[];
+  lastMessage?: Message | undefined;
+  unreadCount: number;
+}
+
+export interface ChatListItem {
+  chat: Chat | undefined;
+  myState: ChatUserState | undefined;
+  lastMessage?: Message | undefined;
+  unreadCount: number;
 }
 
 export interface Message {
@@ -69,59 +84,97 @@ export interface Message {
   text: string;
   isEdited: boolean;
   editedAt?: Timestamp | undefined;
-  deletedAt?: Timestamp | undefined;
   replyToId?: string | undefined;
   createdAt: Timestamp | undefined;
   updatedAt: Timestamp | undefined;
-  requestId: string;
 }
 
 export interface CreateChatRequest {
   requestId: string;
+  actorUserId: string;
   type: ChatType;
-  userIds: string[];
+  participantUserIds: string[];
   title?: string | undefined;
   avatarUrl?: string | undefined;
 }
 
 export interface GetChatRequest {
   chatId: string;
+  actorUserId: string;
 }
 
 export interface UpdateChatRequest {
   chatId: string;
+  actorUserId: string;
   title?: string | undefined;
   avatarUrl?: string | undefined;
 }
 
 export interface DeleteChatRequest {
   chatId: string;
+  actorUserId: string;
 }
 
 export interface ListChatsRequest {
-  userId: string;
+  actorUserId: string;
+  limit: number;
+  cursor?: string | undefined;
+  includeArchived: boolean;
+}
+
+export interface ListChatsResponse {
+  chats: ChatListItem[];
+  nextCursor?: string | undefined;
+}
+
+export interface GetChatMembersRequest {
+  chatId: string;
+  actorUserId: string;
   limit: number;
   cursor?: string | undefined;
 }
 
-export interface ListChatsResponse {
-  chats: Chat[];
+export interface GetChatMembersResponse {
+  participants: ChatParticipant[];
   nextCursor?: string | undefined;
 }
 
 export interface AddMembersRequest {
   chatId: string;
+  actorUserId: string;
   userIds: string[];
 }
 
 export interface RemoveMemberRequest {
   chatId: string;
+  actorUserId: string;
   userId: string;
 }
 
 export interface LeaveChatRequest {
   chatId: string;
-  userId: string;
+  actorUserId: string;
+}
+
+export interface ArchiveChatRequest {
+  chatId: string;
+  actorUserId: string;
+}
+
+export interface UnarchiveChatRequest {
+  chatId: string;
+  actorUserId: string;
+}
+
+export interface MuteChatRequest {
+  chatId: string;
+  actorUserId: string;
+  mutedUntil: Timestamp | undefined;
+}
+
+export interface UnmuteChatRequest {
+  chatId: string;
+  actorUserId: string;
 }
 
 export interface SendMessageRequest {
@@ -129,14 +182,14 @@ export interface SendMessageRequest {
   chatId: string;
   authorId: string;
   kind: MessageKind;
-  text?: string | undefined;
+  text: string;
   replyToId?: string | undefined;
 }
 
 export interface UpdateMessageRequest {
   messageId: string;
   authorId: string;
-  text?: string | undefined;
+  text: string;
 }
 
 export interface DeleteMessageRequest {
@@ -146,6 +199,7 @@ export interface DeleteMessageRequest {
 
 export interface ListMessagesRequest {
   chatId: string;
+  actorUserId: string;
   limit: number;
   cursor?: string | undefined;
 }
@@ -157,28 +211,38 @@ export interface ListMessagesResponse {
 
 export interface MarkAsReadRequest {
   chatId: string;
-  userId: string;
+  actorUserId: string;
   lastReadMessageId: string;
 }
 
 export const CHAT_V1_PACKAGE_NAME = "chat.v1";
 
 export interface ChatServiceClient {
-  createChat(request: CreateChatRequest): Observable<Chat>;
+  createChat(request: CreateChatRequest): Observable<ChatDetails>;
 
-  getChat(request: GetChatRequest): Observable<Chat>;
+  getChat(request: GetChatRequest): Observable<ChatDetails>;
 
-  updateChat(request: UpdateChatRequest): Observable<Chat>;
+  updateChat(request: UpdateChatRequest): Observable<ChatDetails>;
 
   deleteChat(request: DeleteChatRequest): Observable<Empty>;
 
   getListChats(request: ListChatsRequest): Observable<ListChatsResponse>;
+
+  getChatMembers(request: GetChatMembersRequest): Observable<GetChatMembersResponse>;
 
   addMembers(request: AddMembersRequest): Observable<Empty>;
 
   removeMember(request: RemoveMemberRequest): Observable<Empty>;
 
   leaveChat(request: LeaveChatRequest): Observable<Empty>;
+
+  archiveChat(request: ArchiveChatRequest): Observable<Empty>;
+
+  unarchiveChat(request: UnarchiveChatRequest): Observable<Empty>;
+
+  muteChat(request: MuteChatRequest): Observable<Empty>;
+
+  unmuteChat(request: UnmuteChatRequest): Observable<Empty>;
 
   sendMessage(request: SendMessageRequest): Observable<Message>;
 
@@ -192,11 +256,11 @@ export interface ChatServiceClient {
 }
 
 export interface ChatServiceController {
-  createChat(request: CreateChatRequest): Promise<Chat> | Observable<Chat> | Chat;
+  createChat(request: CreateChatRequest): Promise<ChatDetails> | Observable<ChatDetails> | ChatDetails;
 
-  getChat(request: GetChatRequest): Promise<Chat> | Observable<Chat> | Chat;
+  getChat(request: GetChatRequest): Promise<ChatDetails> | Observable<ChatDetails> | ChatDetails;
 
-  updateChat(request: UpdateChatRequest): Promise<Chat> | Observable<Chat> | Chat;
+  updateChat(request: UpdateChatRequest): Promise<ChatDetails> | Observable<ChatDetails> | ChatDetails;
 
   deleteChat(request: DeleteChatRequest): void | Promise<void>;
 
@@ -204,11 +268,23 @@ export interface ChatServiceController {
     request: ListChatsRequest,
   ): Promise<ListChatsResponse> | Observable<ListChatsResponse> | ListChatsResponse;
 
+  getChatMembers(
+    request: GetChatMembersRequest,
+  ): Promise<GetChatMembersResponse> | Observable<GetChatMembersResponse> | GetChatMembersResponse;
+
   addMembers(request: AddMembersRequest): void | Promise<void>;
 
   removeMember(request: RemoveMemberRequest): void | Promise<void>;
 
   leaveChat(request: LeaveChatRequest): void | Promise<void>;
+
+  archiveChat(request: ArchiveChatRequest): void | Promise<void>;
+
+  unarchiveChat(request: UnarchiveChatRequest): void | Promise<void>;
+
+  muteChat(request: MuteChatRequest): void | Promise<void>;
+
+  unmuteChat(request: UnmuteChatRequest): void | Promise<void>;
 
   sendMessage(request: SendMessageRequest): Promise<Message> | Observable<Message> | Message;
 
@@ -231,9 +307,14 @@ export function ChatServiceControllerMethods() {
       "updateChat",
       "deleteChat",
       "getListChats",
+      "getChatMembers",
       "addMembers",
       "removeMember",
       "leaveChat",
+      "archiveChat",
+      "unarchiveChat",
+      "muteChat",
+      "unmuteChat",
       "sendMessage",
       "updateMessage",
       "deleteMessage",
