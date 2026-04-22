@@ -38,10 +38,9 @@ enum ChatType {
 }
 
 enum ChatMemberRole {
-  UNSPECIFIED = 0;
-  OWNER = 1;
-  ADMIN = 2;
-  MEMBER = 3;
+  OWNER = 0;
+  ADMIN = 1;
+  MEMBER = 2;
 }
 
 enum MessageKind {
