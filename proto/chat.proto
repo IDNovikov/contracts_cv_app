@@ -113,6 +113,7 @@ message UpdateChatRequest {
 
 message DeleteChatRequest {
   string chat_id = 1;
+  string user_id = 2;
 }
 
 message ListChatsRequest {
@@ -163,7 +164,7 @@ message UpdateMessageRequest {
 
 message DeleteMessageRequest {
   string message_id = 1;
-  string author_id = 2;
+  string user_id = 2;
 }
 
 message ListMessagesRequest {
