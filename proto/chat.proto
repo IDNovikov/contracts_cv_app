@@ -44,9 +44,8 @@ enum ChatMemberRole {
 }
 
 enum MessageKind {
-  UNSPECIFIED = 0;
-  TEXT = 1;
-  SYSTEM = 2;
+  TEXT = 0;
+  SYSTEM = 1;
 }
 
 message Chat {
