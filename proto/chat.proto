@@ -32,22 +32,22 @@ service ChatService {
 }
 
 enum ChatType {
-  CHAT_TYPE_UNSPECIFIED = 0;
-  CHAT_TYPE_DIRECT = 1;
-  CHAT_TYPE_GROUP = 2;
+  UNSPECIFIED = 0;
+  DIRECT = 1;
+  GROUP = 2;
 }
 
 enum ChatMemberRole {
-  CHAT_MEMBER_ROLE_UNSPECIFIED = 0;
-  CHAT_MEMBER_ROLE_OWNER = 1;
-  CHAT_MEMBER_ROLE_ADMIN = 2;
-  CHAT_MEMBER_ROLE_MEMBER = 3;
+  UNSPECIFIED = 0;
+  OWNER = 1;
+  ADMIN = 2;
+  MEMBER = 3;
 }
 
 enum MessageKind {
-  MESSAGE_KIND_UNSPECIFIED = 0;
-  MESSAGE_KIND_TEXT = 1;
-  MESSAGE_KIND_SYSTEM = 2;
+  UNSPECIFIED = 0;
+  TEXT = 1;
+  SYSTEM = 2;
 }
 
 message Chat {
