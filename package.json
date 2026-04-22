@@ -1,6 +1,6 @@
 {
   "name": "@noildm/contracts",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Protobuf and RabbitMQ contracts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
