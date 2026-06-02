@@ -24,7 +24,7 @@ service AuthService {
   rpc LogoutUserSessionsByAdmin(LogoutUserSessionsByAdminRequest) returns (TextMessageResponse);
   rpc LogoutAllSessionsByAdmin(google.protobuf.Empty) returns (TextMessageResponse);
 
-  rpc GetAuthDataByUserId(GetAuthDataByUserId) returns (AuthDataResponse);
+  rpc GetAuthDataByUserId(GetAuthDataByUserIdRequest) returns (AuthDataResponse);
 }
 
 enum UserRoles {
@@ -48,7 +48,7 @@ message AuthDataResponse{
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
 }
-message GetAuthDataByUserId {
+message GetAuthDataByUserIdRequest {
   string user_id = 1;
 }
 
