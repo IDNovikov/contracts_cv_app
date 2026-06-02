@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package auth.v1;
 
+import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 //
 service AuthService {
@@ -22,6 +23,33 @@ service AuthService {
   rpc GetAllSessionsByAdmin(google.protobuf.Empty) returns (AdminSessionsResponse);
   rpc LogoutUserSessionsByAdmin(LogoutUserSessionsByAdminRequest) returns (TextMessageResponse);
   rpc LogoutAllSessionsByAdmin(google.protobuf.Empty) returns (TextMessageResponse);
+
+  rpc GetAuthDataByUserId(GetAuthDataByUserId) returns (AuthDataResponse);
+}
+
+enum UserRoles {
+    ADMIN = 0;
+    USER = 1;
+}
+enum UserStatus {
+    ACTIVE = 0;
+    BANNED = 1;
+    DELETED = 2;
+}
+
+message AuthDataResponse{
+  string id = 1;
+  string user_id = 2;
+  bool is_email_verified = 3;
+  UserRoles role = 4;
+  UserStatus status = 5;
+  string email = 6;
+  string password = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+message GetAuthDataByUserId {
+  string user_id = 1;
 }
 
 message Location {
